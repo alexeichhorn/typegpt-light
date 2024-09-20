@@ -5,7 +5,7 @@ with open("README.md", "r") as f:
 
 setuptools.setup(
     name="typegpt_light",
-    version="0.0.1",
+    version="0.0.2",
     author="Alexander Eichhorn",
     author_email="",
     description="TypeGPT Light is a reduced version of TypeGPT that uses OpenAI's built-in strucutred output, but keeps some nice architecture features of TypeGPT.",
