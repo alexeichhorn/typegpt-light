@@ -5,12 +5,16 @@ from typing import TypeVar, overload
 from openai import BadRequestError, BaseModel, resources
 from openai._types import NOT_GIVEN, NotGiven
 from openai.types.chat import (
+    ChatCompletionContentPartParam,
     ChatCompletionMessageParam,
     ChatCompletionToolChoiceOptionParam,
     ChatCompletionToolParam,
+    ChatCompletionUserMessageParam,
     completion_create_params,
 )
 from pydantic import BaseModel
+
+from typegpt_light.prompt_definition.image import ImagePrompt, ImageURLPrompt
 
 from ...exceptions import LLMException, LLMModelRefusal, LLMOutputTruncated
 from ...prompt_definition.prompt_template import PromptTemplate
@@ -172,7 +176,7 @@ class TypeChatCompletion(resources.chat.Completions, BaseChatCompletions):
 
         messages: list[ChatCompletionMessageParam] = [
             {"role": "system", "content": prompt.system_prompt()},
-            {"role": "user", "content": prompt.user_prompt()},
+            self._generate_user_message(prompt.user_prompt()),
         ]
 
         if isinstance(output_type, _UseDefaultType):

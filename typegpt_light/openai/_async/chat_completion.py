@@ -177,7 +177,7 @@ class AsyncTypeChatCompletion(resources.chat.AsyncCompletions, BaseChatCompletio
 
         messages: list[ChatCompletionMessageParam] = [
             {"role": "system", "content": prompt.system_prompt()},
-            {"role": "user", "content": prompt.user_prompt()},
+            self._generate_user_message(prompt.user_prompt()),
         ]
 
         if isinstance(output_type, _UseDefaultType):

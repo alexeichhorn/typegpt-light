@@ -1,9 +1,10 @@
-from typegpt_light.exceptions import LLMException
+from openai.types.chat import ChatCompletionContentPartParam, ChatCompletionMessageParam, ChatCompletionUserMessageParam
 
+from typegpt_light.exceptions import LLMException
+from typegpt_light.prompt_definition.image import ImagePrompt, ImageURLPrompt
+from typegpt_light.prompt_definition.prompt_template import UserPrompt
 
 from .views import OpenAIChatModel
-
-from openai.types.chat import ChatCompletionMessageParam
 
 
 class BaseChatCompletions:
@@ -32,6 +33,36 @@ class BaseChatCompletions:
                 | "gpt-4o-mini-2024-07-18"
             ):
                 return 128_000
+
+    # - User Prompt Image Handling
+
+    def _generate_user_message(self, user_prompt: UserPrompt) -> ChatCompletionUserMessageParam:
+        if ImagePrompt is not None and isinstance(user_prompt, ImagePrompt):
+            user_prompt = [user_prompt]
+        elif isinstance(user_prompt, ImageURLPrompt):
+            user_prompt = [user_prompt]
+
+        if isinstance(user_prompt, str):
+            return {"role": "user", "content": user_prompt}
+        else:
+            content_parts: list[ChatCompletionContentPartParam] = []
+            for content in user_prompt:
+                if isinstance(content, str):
+                    content_parts.append({"type": "text", "text": content})
+                elif ImagePrompt is not None and isinstance(content, ImagePrompt):
+                    content_parts.append(
+                        {
+                            "type": "image_url",
+                            "image_url": {
+                                "url": f"data:image/png;base64,{content._encode_image(content.image)}",
+                                "detail": content.quality,
+                            },
+                        }
+                    )
+                elif isinstance(content, ImageURLPrompt):
+                    content_parts.append({"type": "image_url", "image_url": {"url": content.image_url, "detail": content.quality}})
+
+            return {"role": "user", "content": content_parts}
 
     # - Exception Handling
 

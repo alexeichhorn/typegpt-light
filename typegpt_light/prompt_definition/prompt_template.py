@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Callable, ClassVar, Generic, Protocol, TypeVar
 
 from pydantic import BaseModel
 
+from typegpt_light.prompt_definition.image import ImagePrompt, ImageURLPrompt
 from typegpt_light.prompt_definition.prompt_settings import PromptSettings
 
 # from ..message_collection_builder import EncodedMessage, MessageCollectionFactory
@@ -11,12 +12,15 @@ from typegpt_light.prompt_definition.prompt_settings import PromptSettings
 # _Output = TypeVar("_Output", bound=BaseLLMResponse)
 
 
+UserPrompt = str | ImagePrompt | ImageURLPrompt | list[str | ImagePrompt | ImageURLPrompt]
+
+
 class PromptTemplate(Protocol):  # , Generic[_Output]):
     def system_prompt(self) -> str:
         """System prompt for the LLM (required)"""
         ...
 
-    def user_prompt(self) -> str:
+    def user_prompt(self) -> UserPrompt:
         """User prompt for the LLM (required)"""
         ...
 
