@@ -22,7 +22,7 @@ class TestOpenAIChatCompletion:
 
     def test_max_token_counter(self):
         # check if test covers all models (increase if new models are added)
-        assert len(OpenAIChatModel.__args__) == 24  #  type: ignore
+        assert len(OpenAIChatModel.__args__) == 29  #  type: ignore
 
         client = AsyncTypeOpenAI(api_key="mock")
 
@@ -48,7 +48,12 @@ class TestOpenAIChatCompletion:
         assert client.chat.completions.max_tokens_of_model("gpt-4o") == 128_000
         assert client.chat.completions.max_tokens_of_model("gpt-4o-2024-05-13") == 128_000
         assert client.chat.completions.max_tokens_of_model("gpt-4o-2024-08-06") == 128_000
+        assert client.chat.completions.max_tokens_of_model("gpt-4o-2024-11-20") == 128_000
         assert client.chat.completions.max_tokens_of_model("gpt-4o-mini") == 128_000
         assert client.chat.completions.max_tokens_of_model("gpt-4o-mini-2024-07-18") == 128_000
+        assert client.chat.completions.max_tokens_of_model("o1") == 128_000
+        assert client.chat.completions.max_tokens_of_model("o1-2024-12-17") == 128_000
+        assert client.chat.completions.max_tokens_of_model("o1-mini") == 128_000
+        assert client.chat.completions.max_tokens_of_model("o1-mini-2024-09-12") == 128_000
 
     # -
