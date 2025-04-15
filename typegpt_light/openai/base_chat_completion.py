@@ -38,6 +38,12 @@ class BaseChatCompletions:
                 | "o1-mini-2024-09-12"
             ):
                 return 128_000
+            case "gpt-4.1" | "gpt-4.1-2025-04-14" | "gpt-4.1-mini" | "gpt-4.1-mini-2025-04-14" | "gpt-4.1-nano" | "gpt-4.1-nano-2025-04-14":
+                return 1_047_576
+            case "o3-mini" | "o3-mini-2025-1-31":
+                return 200_000
+
+        return 128_000  # fallback to 128k tokens
 
     # - User Prompt Image Handling
 
