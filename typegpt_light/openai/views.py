@@ -16,7 +16,7 @@ OpenAIStructuredOutputChatModel = Literal[
     "o1",  # o1
     "o1-2024-12-17",
     "o3-mini",  # o3 mini
-    "o3-mini-2025-1-31",
+    "o3-mini-2025-01-31",
 ]
 
 
@@ -57,8 +57,13 @@ OpenAIChatModel = Literal[
     "o1-mini",  # o1 mini
     "o1-mini-2024-09-12",
     "o3-mini",  # o3 mini
-    "o3-mini-2025-1-31",
+    "o3-mini-2025-01-31",
 ]
+
+
+@dataclass
+class UnsafeModel:
+    name: str
 
 
 @dataclass

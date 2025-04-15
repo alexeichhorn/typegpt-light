@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TypeVar, overload
+from typing import TypeVar, cast, overload
 
 from openai import BadRequestError, BaseModel, resources
 from openai._types import NOT_GIVEN, NotGiven
@@ -21,7 +21,7 @@ from ...prompt_definition.prompt_template import PromptTemplate
 from ...utils.internal_types import _UseDefault, _UseDefaultType
 from ..base_chat_completion import BaseChatCompletions
 from ..exceptions import AzureContentFilterException
-from ..views import AzureChatModel, OpenAIChatModel, OpenAIStructuredOutputChatModel
+from ..views import AzureChatModel, OpenAIChatModel, OpenAIStructuredOutputChatModel, UnsafeModel
 
 _Output = TypeVar("_Output", bound=BaseModel)
 
@@ -29,7 +29,7 @@ _Output = TypeVar("_Output", bound=BaseModel)
 class TypeChatCompletion(resources.chat.Completions, BaseChatCompletions):
     def generate_completion(
         self,
-        model: OpenAIChatModel | AzureChatModel,
+        model: OpenAIChatModel | UnsafeModel | AzureChatModel,
         messages: list[ChatCompletionMessageParam],
         frequency_penalty: float | None | NotGiven = NOT_GIVEN,  # [-2, 2]
         function_call: completion_create_params.FunctionCall | NotGiven = NOT_GIVEN,
@@ -52,6 +52,9 @@ class TypeChatCompletion(resources.chat.Completions, BaseChatCompletions):
         if isinstance(model, AzureChatModel):
             raw_model = model.deployment_id
             is_azure = True
+        elif isinstance(model, UnsafeModel):
+            raw_model = model.name
+            is_azure = False
         else:
             raw_model = model
             is_azure = False
@@ -97,7 +100,7 @@ class TypeChatCompletion(resources.chat.Completions, BaseChatCompletions):
     @overload
     def generate_output(
         self,
-        model: OpenAIStructuredOutputChatModel | AzureChatModel,
+        model: OpenAIStructuredOutputChatModel | UnsafeModel | AzureChatModel,
         prompt: PromptTemplate,
         max_output_tokens: int,
         output_type: type[_Output],
@@ -114,7 +117,7 @@ class TypeChatCompletion(resources.chat.Completions, BaseChatCompletions):
     @overload
     def generate_output(
         self,
-        model: OpenAIStructuredOutputChatModel | AzureChatModel,
+        model: OpenAIStructuredOutputChatModel | UnsafeModel | AzureChatModel,
         prompt: PromptTemplate,
         max_output_tokens: int,
         output_type: _UseDefaultType = _UseDefault,
@@ -130,7 +133,7 @@ class TypeChatCompletion(resources.chat.Completions, BaseChatCompletions):
 
     def generate_output(
         self,
-        model: OpenAIStructuredOutputChatModel | AzureChatModel,
+        model: OpenAIStructuredOutputChatModel | UnsafeModel | AzureChatModel,
         prompt: PromptTemplate,
         max_output_tokens: int,
         output_type: type[_Output] | _UseDefaultType = _UseDefault,
@@ -165,6 +168,9 @@ class TypeChatCompletion(resources.chat.Completions, BaseChatCompletions):
         if isinstance(model, AzureChatModel):
             raw_model = model.deployment_id
             is_azure = True
+        elif isinstance(model, UnsafeModel):
+            raw_model = model.name
+            is_azure = False
         else:
             raw_model = model
             is_azure = False

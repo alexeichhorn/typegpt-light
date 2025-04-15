@@ -15,7 +15,7 @@ from openai.types.chat.chat_completion_message import ChatCompletionMessage
 
 from typegpt_light import PromptTemplate
 from typegpt_light.exceptions import LLMTokenLimitExceeded
-from typegpt_light.openai import AsyncTypeAzureOpenAI, AsyncTypeOpenAI, OpenAIChatModel, TypeAzureOpenAI, TypeOpenAI
+from typegpt_light.openai import AsyncTypeAzureOpenAI, AsyncTypeOpenAI, OpenAIChatModel, TypeAzureOpenAI, TypeOpenAI, UnsafeModel
 
 
 class TestOpenAIChatCompletion:
@@ -62,6 +62,14 @@ class TestOpenAIChatCompletion:
         assert client.chat.completions.max_tokens_of_model("gpt-4.1-nano") == 1_047_576
         assert client.chat.completions.max_tokens_of_model("gpt-4.1-nano-2025-04-14") == 1_047_576
         assert client.chat.completions.max_tokens_of_model("o3-mini") == 200_000
-        assert client.chat.completions.max_tokens_of_model("o3-mini-2025-1-31") == 200_000
+        assert client.chat.completions.max_tokens_of_model("o3-mini-2025-01-31") == 200_000
+
+        # "unsafe" models
+
+        # all unknown models should return 128k
+        assert client.chat.completions.max_tokens_of_model(UnsafeModel(name="some-random-model")) == 128_000
+
+        # but known ones, should return the correct value
+        assert client.chat.completions.max_tokens_of_model(UnsafeModel(name="o3-mini-2025-01-31")) == 200_000
 
     # -

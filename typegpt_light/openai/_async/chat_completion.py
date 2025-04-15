@@ -18,7 +18,7 @@ from ...prompt_definition.prompt_template import PromptTemplate
 from ...utils.internal_types import _UseDefault, _UseDefaultType
 from ..base_chat_completion import BaseChatCompletions
 from ..exceptions import AzureContentFilterException
-from ..views import AzureChatModel, OpenAIChatModel
+from ..views import AzureChatModel, OpenAIChatModel, UnsafeModel
 
 # Prompt = TypeVar("Prompt", bound=PromptTemplate)
 _Output = TypeVar("_Output", bound=BaseModel)
@@ -27,7 +27,7 @@ _Output = TypeVar("_Output", bound=BaseModel)
 class AsyncTypeChatCompletion(resources.chat.AsyncCompletions, BaseChatCompletions):
     async def generate_completion(
         self,
-        model: OpenAIChatModel | AzureChatModel,
+        model: OpenAIChatModel | UnsafeModel | AzureChatModel,
         messages: list[ChatCompletionMessageParam],
         frequency_penalty: float | None | NotGiven = NOT_GIVEN,  # [-2, 2]
         function_call: completion_create_params.FunctionCall | NotGiven = NOT_GIVEN,
@@ -50,6 +50,9 @@ class AsyncTypeChatCompletion(resources.chat.AsyncCompletions, BaseChatCompletio
         if isinstance(model, AzureChatModel):
             raw_model = model.deployment_id
             is_azure = True
+        elif isinstance(model, UnsafeModel):
+            raw_model = model.name
+            is_azure = False
         else:
             raw_model = model
             is_azure = False
@@ -95,7 +98,7 @@ class AsyncTypeChatCompletion(resources.chat.AsyncCompletions, BaseChatCompletio
     @overload
     async def generate_output(
         self,
-        model: OpenAIChatModel | AzureChatModel,
+        model: OpenAIChatModel | UnsafeModel | AzureChatModel,
         prompt: PromptTemplate,
         max_output_tokens: int,
         output_type: type[_Output],
@@ -113,7 +116,7 @@ class AsyncTypeChatCompletion(resources.chat.AsyncCompletions, BaseChatCompletio
     @overload
     async def generate_output(
         self,
-        model: OpenAIChatModel | AzureChatModel,
+        model: OpenAIChatModel | UnsafeModel | AzureChatModel,
         prompt: PromptTemplate,
         max_output_tokens: int,
         output_type: _UseDefaultType = _UseDefault,
@@ -130,7 +133,7 @@ class AsyncTypeChatCompletion(resources.chat.AsyncCompletions, BaseChatCompletio
 
     async def generate_output(
         self,
-        model: OpenAIChatModel | AzureChatModel,
+        model: OpenAIChatModel | UnsafeModel | AzureChatModel,
         prompt: PromptTemplate,
         max_output_tokens: int,
         output_type: type[_Output] | _UseDefaultType = _UseDefault,
@@ -166,6 +169,9 @@ class AsyncTypeChatCompletion(resources.chat.AsyncCompletions, BaseChatCompletio
         if isinstance(model, AzureChatModel):
             raw_model = model.deployment_id
             is_azure = True
+        elif isinstance(model, UnsafeModel):
+            raw_model = model.name
+            is_azure = False
         else:
             raw_model = model
             is_azure = False

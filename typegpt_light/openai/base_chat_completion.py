@@ -4,13 +4,20 @@ from typegpt_light.exceptions import LLMException
 from typegpt_light.prompt_definition.image import ImagePrompt, ImageURLPrompt
 from typegpt_light.prompt_definition.prompt_template import UserPrompt
 
-from .views import OpenAIChatModel
+from .views import AzureChatModel, OpenAIChatModel, UnsafeModel
 
 
 class BaseChatCompletions:
     @staticmethod
-    def max_tokens_of_model(model: OpenAIChatModel) -> int:
-        match model:
+    def max_tokens_of_model(model: OpenAIChatModel | UnsafeModel | AzureChatModel) -> int:
+        if isinstance(model, AzureChatModel):
+            model_name = model.base_model
+        elif isinstance(model, UnsafeModel):
+            model_name = model.name
+        else:
+            model_name = model
+
+        match model_name:
             case "gpt-3.5-turbo-0301" | "gpt-3.5-turbo-0613":
                 return 4096
             case "gpt-3.5-turbo" | "gpt-3.5-turbo-16k" | "gpt-3.5-turbo-16k-0613" | "gpt-3.5-turbo-1106" | "gpt-3.5-turbo-0125":
@@ -40,7 +47,7 @@ class BaseChatCompletions:
                 return 128_000
             case "gpt-4.1" | "gpt-4.1-2025-04-14" | "gpt-4.1-mini" | "gpt-4.1-mini-2025-04-14" | "gpt-4.1-nano" | "gpt-4.1-nano-2025-04-14":
                 return 1_047_576
-            case "o3-mini" | "o3-mini-2025-1-31":
+            case "o3-mini" | "o3-mini-2025-01-31":
                 return 200_000
 
         return 128_000  # fallback to 128k tokens
