@@ -10,6 +10,7 @@ from openai.types.chat import (
     ChatCompletionToolParam,
     completion_create_params,
 )
+from openai.types.shared.reasoning_effort import ReasoningEffort
 from pydantic import BaseModel
 
 from typegpt_light.exceptions import LLMModelRefusal, LLMOutputTruncated
@@ -110,6 +111,7 @@ class AsyncTypeChatCompletion(resources.chat.AsyncCompletions, BaseChatCompletio
         seed: int | None | NotGiven = NOT_GIVEN,
         top_p: float | NotGiven = NOT_GIVEN,
         timeout: float | None | NotGiven = NOT_GIVEN,
+        reasoning_effort: ReasoningEffort | NotGiven = NOT_GIVEN,
         retry_on_parse_error: int = 0,
     ) -> _Output: ...
 
@@ -128,6 +130,7 @@ class AsyncTypeChatCompletion(resources.chat.AsyncCompletions, BaseChatCompletio
         seed: int | None | NotGiven = NOT_GIVEN,
         top_p: float | NotGiven = NOT_GIVEN,
         timeout: float | None | NotGiven = NOT_GIVEN,
+        reasoning_effort: ReasoningEffort | NotGiven = NOT_GIVEN,
         retry_on_parse_error: int = 0,
     ) -> BaseModel: ...
 
@@ -145,6 +148,7 @@ class AsyncTypeChatCompletion(resources.chat.AsyncCompletions, BaseChatCompletio
         seed: int | None | NotGiven = NOT_GIVEN,
         top_p: float | NotGiven = NOT_GIVEN,
         timeout: float | None | NotGiven = NOT_GIVEN,
+        reasoning_effort: ReasoningEffort | NotGiven = NOT_GIVEN,
         retry_on_parse_error: int = 0,
     ) -> _Output | BaseModel:
         """
@@ -198,6 +202,7 @@ class AsyncTypeChatCompletion(resources.chat.AsyncCompletions, BaseChatCompletio
                 seed=seed,
                 top_p=top_p,
                 timeout=timeout,
+                reasoning_effort=reasoning_effort,
                 response_format=prompt.Output,
             )
         else:
@@ -212,6 +217,7 @@ class AsyncTypeChatCompletion(resources.chat.AsyncCompletions, BaseChatCompletio
                 seed=seed,
                 top_p=top_p,
                 timeout=timeout,
+                reasoning_effort=reasoning_effort,
                 response_format=output_type,
             )
 

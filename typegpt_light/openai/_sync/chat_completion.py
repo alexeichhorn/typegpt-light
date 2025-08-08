@@ -1,22 +1,20 @@
 from __future__ import annotations
 
-from typing import TypeVar, cast, overload
+from typing import TypeVar, overload
 
 from openai import BadRequestError, BaseModel, resources
 from openai._types import NOT_GIVEN, NotGiven
 from openai.types.chat import (
-    ChatCompletionContentPartParam,
     ChatCompletionMessageParam,
     ChatCompletionToolChoiceOptionParam,
     ChatCompletionToolParam,
-    ChatCompletionUserMessageParam,
     completion_create_params,
 )
+from openai.types.shared.reasoning_effort import ReasoningEffort
 from pydantic import BaseModel
 
-from typegpt_light.prompt_definition.image import ImagePrompt, ImageURLPrompt
 
-from ...exceptions import LLMException, LLMModelRefusal, LLMOutputTruncated
+from ...exceptions import LLMModelRefusal, LLMOutputTruncated
 from ...prompt_definition.prompt_template import PromptTemplate
 from ...utils.internal_types import _UseDefault, _UseDefaultType
 from ..base_chat_completion import BaseChatCompletions
@@ -112,6 +110,7 @@ class TypeChatCompletion(resources.chat.Completions, BaseChatCompletions):
         seed: int | None | NotGiven = NOT_GIVEN,
         top_p: float | NotGiven = NOT_GIVEN,
         timeout: float | None | NotGiven = NOT_GIVEN,
+        reasoning_effort: ReasoningEffort | NotGiven = NOT_GIVEN,
     ) -> _Output: ...
 
     @overload
@@ -129,6 +128,7 @@ class TypeChatCompletion(resources.chat.Completions, BaseChatCompletions):
         seed: int | None | NotGiven = NOT_GIVEN,
         top_p: float | NotGiven = NOT_GIVEN,
         timeout: float | None | NotGiven = NOT_GIVEN,
+        reasoning_effort: ReasoningEffort | NotGiven = NOT_GIVEN,
     ) -> BaseModel: ...
 
     def generate_output(
@@ -145,6 +145,7 @@ class TypeChatCompletion(resources.chat.Completions, BaseChatCompletions):
         seed: int | None | NotGiven = NOT_GIVEN,
         top_p: float | NotGiven = NOT_GIVEN,
         timeout: float | None | NotGiven = NOT_GIVEN,
+        reasoning_effort: ReasoningEffort | NotGiven = NOT_GIVEN,
     ) -> _Output | BaseModel:
         """
         Calls OpenAI Chat API, generates assistant response, and fits it into the output class
@@ -197,6 +198,7 @@ class TypeChatCompletion(resources.chat.Completions, BaseChatCompletions):
                 seed=seed,
                 top_p=top_p,
                 timeout=timeout,
+                reasoning_effort=reasoning_effort,
                 response_format=prompt.Output,
             )
         else:
@@ -211,6 +213,7 @@ class TypeChatCompletion(resources.chat.Completions, BaseChatCompletions):
                 seed=seed,
                 top_p=top_p,
                 timeout=timeout,
+                reasoning_effort=reasoning_effort,
                 response_format=output_type,
             )
 
