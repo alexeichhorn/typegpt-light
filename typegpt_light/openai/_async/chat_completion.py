@@ -101,9 +101,9 @@ class AsyncTypeChatCompletion(resources.chat.AsyncCompletions, BaseChatCompletio
         self,
         model: OpenAIChatModel | UnsafeModel | AzureChatModel,
         prompt: PromptTemplate,
-        max_output_tokens: int,
         output_type: type[_Output],
-        max_input_tokens: int | None = None,
+        max_tokens: int | None | NotGiven = NOT_GIVEN,
+        max_completion_tokens: int | None | NotGiven = NOT_GIVEN,
         frequency_penalty: float | None | NotGiven = NOT_GIVEN,  # [-2, 2]
         n: int | None | NotGiven = NOT_GIVEN,
         presence_penalty: float | None | NotGiven = NOT_GIVEN,  # [-2, 2]
@@ -120,9 +120,9 @@ class AsyncTypeChatCompletion(resources.chat.AsyncCompletions, BaseChatCompletio
         self,
         model: OpenAIChatModel | UnsafeModel | AzureChatModel,
         prompt: PromptTemplate,
-        max_output_tokens: int,
         output_type: _UseDefaultType = _UseDefault,
-        max_input_tokens: int | None = None,
+        max_tokens: int | None | NotGiven = NOT_GIVEN,
+        max_completion_tokens: int | None | NotGiven = NOT_GIVEN,
         frequency_penalty: float | None | NotGiven = NOT_GIVEN,  # [-2, 2]
         n: int | None | NotGiven = NOT_GIVEN,
         presence_penalty: float | None | NotGiven = NOT_GIVEN,  # [-2, 2]
@@ -138,9 +138,9 @@ class AsyncTypeChatCompletion(resources.chat.AsyncCompletions, BaseChatCompletio
         self,
         model: OpenAIChatModel | UnsafeModel | AzureChatModel,
         prompt: PromptTemplate,
-        max_output_tokens: int,
         output_type: type[_Output] | _UseDefaultType = _UseDefault,
-        max_input_tokens: int | None = None,
+        max_tokens: int | None | NotGiven = NOT_GIVEN,
+        max_completion_tokens: int | None | NotGiven = NOT_GIVEN,
         frequency_penalty: float | None | NotGiven = NOT_GIVEN,  # [-2, 2]
         n: int | None | NotGiven = NOT_GIVEN,
         presence_penalty: float | None | NotGiven = NOT_GIVEN,  # [-2, 2]
@@ -156,18 +156,13 @@ class AsyncTypeChatCompletion(resources.chat.AsyncCompletions, BaseChatCompletio
 
         :param model: model to use as `OpenAIChatModel` or `AzureChatModel`
         :param prompt: prompt, which is a subclass of `PromptTemplate`
-        :param max_output_tokens: maximum number of tokens to generate
+        :param max_tokens: maximum number of tokens for non-reasoning models
+        :param max_completion_tokens: maximum number of tokens for reasoning models
         :param output_type: output class used to parse the response, subclass of `BaseLLMResponse`. If not specified, the output defined in the prompt is used
-        :param max_input_tokens: maximum number of tokens to use from the prompt. If not specified, the maximum number of tokens is calculated automatically
         :param request_timeout: timeout for the request in seconds
         :param retry_on_parse_error: number of retries if the response cannot be parsed (i.e. any `LLMParseException`). If set to 0, it has no effect.
         :param config: additional OpenAI/Azure config if needed (e.g. no global api key)
         """
-
-        if isinstance(model, AzureChatModel):
-            model_type = model.base_model
-        else:
-            model_type = model
 
         raw_model: OpenAIChatModel | str
         if isinstance(model, AzureChatModel):
@@ -180,11 +175,6 @@ class AsyncTypeChatCompletion(resources.chat.AsyncCompletions, BaseChatCompletio
             raw_model = model
             is_azure = False
 
-        max_prompt_length = self.max_tokens_of_model(model_type) - max_output_tokens
-
-        if max_input_tokens:
-            max_prompt_length = min(max_prompt_length, max_input_tokens)
-
         messages: list[ChatCompletionMessageParam] = [
             {"role": "system", "content": prompt.system_prompt()},
             self._generate_user_message(prompt.user_prompt()),
@@ -194,7 +184,8 @@ class AsyncTypeChatCompletion(resources.chat.AsyncCompletions, BaseChatCompletio
             result = await self._client.beta.chat.completions.parse(
                 model=raw_model,
                 messages=messages,
-                max_tokens=max_output_tokens,
+                max_tokens=max_tokens,
+                max_completion_tokens=max_completion_tokens,
                 frequency_penalty=frequency_penalty,
                 n=n,
                 presence_penalty=presence_penalty,
@@ -209,7 +200,8 @@ class AsyncTypeChatCompletion(resources.chat.AsyncCompletions, BaseChatCompletio
             result = await self._client.beta.chat.completions.parse(
                 model=raw_model,
                 messages=messages,
-                max_tokens=max_output_tokens,
+                max_tokens=max_tokens,
+                max_completion_tokens=max_completion_tokens,
                 frequency_penalty=frequency_penalty,
                 n=n,
                 presence_penalty=presence_penalty,
