@@ -38,6 +38,7 @@ class TypeChatCompletion(resources.chat.Completions, BaseChatCompletions):
         n: int | None | NotGiven = NOT_GIVEN,
         presence_penalty: float | None | NotGiven = NOT_GIVEN,  # [-2, 2]
         response_format: completion_create_params.ResponseFormat | NotGiven = NOT_GIVEN,
+        store: bool | None | NotGiven = NOT_GIVEN,
         seed: int | None | NotGiven = NOT_GIVEN,
         stop: str | list[str] | None | NotGiven = NOT_GIVEN,
         temperature: float | None | NotGiven = NOT_GIVEN,
@@ -71,6 +72,7 @@ class TypeChatCompletion(resources.chat.Completions, BaseChatCompletions):
                 n=n,
                 presence_penalty=presence_penalty,
                 response_format=response_format,
+                store=store,
                 seed=seed,
                 stop=stop,
                 stream=False,
@@ -113,6 +115,7 @@ class TypeChatCompletion(resources.chat.Completions, BaseChatCompletions):
         top_p: float | NotGiven = NOT_GIVEN,
         timeout: float | None | NotGiven = NOT_GIVEN,
         reasoning_effort: ReasoningEffort | NotGiven = NOT_GIVEN,
+        store: bool | None | NotGiven = NOT_GIVEN,
     ) -> _Output: ...
 
     @overload
@@ -131,6 +134,7 @@ class TypeChatCompletion(resources.chat.Completions, BaseChatCompletions):
         top_p: float | NotGiven = NOT_GIVEN,
         timeout: float | None | NotGiven = NOT_GIVEN,
         reasoning_effort: ReasoningEffort | NotGiven = NOT_GIVEN,
+        store: bool | None | NotGiven = NOT_GIVEN,
     ) -> BaseModel: ...
 
     def generate_output(
@@ -148,6 +152,7 @@ class TypeChatCompletion(resources.chat.Completions, BaseChatCompletions):
         top_p: float | NotGiven = NOT_GIVEN,
         timeout: float | None | NotGiven = NOT_GIVEN,
         reasoning_effort: ReasoningEffort | NotGiven = NOT_GIVEN,
+        store: bool | None | NotGiven = NOT_GIVEN,
     ) -> _Output | BaseModel:
         """
         Calls OpenAI Chat API, generates assistant response, and fits it into the output class
@@ -192,6 +197,7 @@ class TypeChatCompletion(resources.chat.Completions, BaseChatCompletions):
                 top_p=top_p,
                 timeout=timeout,
                 reasoning_effort=reasoning_effort,
+                store=store,
                 response_format=prompt.Output,
             )
         else:
@@ -208,6 +214,7 @@ class TypeChatCompletion(resources.chat.Completions, BaseChatCompletions):
                 top_p=top_p,
                 timeout=timeout,
                 reasoning_effort=reasoning_effort,
+                store=store,
                 response_format=output_type,
             )
 
