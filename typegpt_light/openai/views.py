@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Literal, TypedDict
+from typing import Literal
 
 OpenAIStructuredOutputChatModel = Literal[
     "gpt-4o",  # gpt-4o
@@ -52,6 +52,12 @@ OpenAIChatModel = Literal[
     "gpt-4.1-mini-2025-04-14",
     "gpt-4.1-nano",  # gpt 4.1 nano
     "gpt-4.1-nano-2025-04-14",
+    "gpt-5",  # gpt-5
+    "gpt-5-2025-08-07",
+    "gpt-5-mini",  # gpt-5 mini
+    "gpt-5-mini-2025-08-07",
+    "gpt-5-nano",  # gpt-5 nano
+    "gpt-5-nano-2025-08-07",
     "o1",  # o1
     "o1-2024-12-17",
     "o1-mini",  # o1 mini

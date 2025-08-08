@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "typegpt_light"
-version = "0.0.4"
+version = "0.0.5"
 description = "TypeGPT Light is a reduced version of TypeGPT that uses OpenAI's built-in structured output, but keeps some nice architecture features of TypeGPT."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -19,7 +19,7 @@ classifiers = [
 ]
 dependencies = [
   "typing_extensions>=4.1.0",
-  "openai>=1.40.0",
+  "openai>=1.99.3",
 ]
 
 [project.urls]

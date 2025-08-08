@@ -1,6 +1,5 @@
-from openai.types.chat import ChatCompletionContentPartParam, ChatCompletionMessageParam, ChatCompletionUserMessageParam
+from openai.types.chat import ChatCompletionContentPartParam, ChatCompletionUserMessageParam
 
-from typegpt_light.exceptions import LLMException
 from typegpt_light.prompt_definition.image import ImagePrompt, ImageURLPrompt
 from typegpt_light.prompt_definition.prompt_template import UserPrompt
 
@@ -49,6 +48,8 @@ class BaseChatCompletions:
                 return 1_047_576
             case "o3-mini" | "o3-mini-2025-01-31":
                 return 200_000
+            case "gpt-5" | "gpt-5-2025-08-07" | "gpt-5-mini" | "gpt-5-mini-2025-08-07" | "gpt-5-nano" | "gpt-5-nano-2025-08-07":
+                return 400_000
 
         return 128_000  # fallback to 128k tokens
 

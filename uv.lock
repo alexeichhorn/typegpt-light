@@ -420,7 +420,7 @@ wheels = [
 
 [[package]]
 name = "typegpt-light"
-version = "0.0.4"
+version = "0.0.5"
 source = { editable = "." }
 dependencies = [
     { name = "openai" },
@@ -434,7 +434,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "openai", specifier = ">=1.40.0" },
+    { name = "openai", specifier = ">=1.99.3" },
     { name = "typing-extensions", specifier = ">=4.1.0" },
 ]
 

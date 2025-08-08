@@ -4,25 +4,15 @@ import sys
 myPath = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, myPath + "/../")
 
-from typing import List, Optional, Union
-from unittest.mock import Mock
 
-import pytest
-from openai import AsyncOpenAI
-from openai.types.chat import ChatCompletion
-from openai.types.chat.chat_completion import Choice
-from openai.types.chat.chat_completion_message import ChatCompletionMessage
-
-from typegpt_light import PromptTemplate
-from typegpt_light.exceptions import LLMTokenLimitExceeded
-from typegpt_light.openai import AsyncTypeAzureOpenAI, AsyncTypeOpenAI, OpenAIChatModel, TypeAzureOpenAI, TypeOpenAI, UnsafeModel
+from typegpt_light.openai import AsyncTypeOpenAI, OpenAIChatModel, UnsafeModel
 
 
 class TestOpenAIChatCompletion:
 
     def test_max_token_counter(self):
         # check if test covers all models (increase if new models are added)
-        assert len(OpenAIChatModel.__args__) == 37  #  type: ignore
+        assert len(OpenAIChatModel.__args__) == 43  #  type: ignore
 
         client = AsyncTypeOpenAI(api_key="mock")
 
@@ -63,6 +53,12 @@ class TestOpenAIChatCompletion:
         assert client.chat.completions.max_tokens_of_model("gpt-4.1-nano-2025-04-14") == 1_047_576
         assert client.chat.completions.max_tokens_of_model("o3-mini") == 200_000
         assert client.chat.completions.max_tokens_of_model("o3-mini-2025-01-31") == 200_000
+        assert client.chat.completions.max_tokens_of_model("gpt-5") == 400_000
+        assert client.chat.completions.max_tokens_of_model("gpt-5-2025-08-07") == 400_000
+        assert client.chat.completions.max_tokens_of_model("gpt-5-mini") == 400_000
+        assert client.chat.completions.max_tokens_of_model("gpt-5-mini-2025-08-07") == 400_000
+        assert client.chat.completions.max_tokens_of_model("gpt-5-nano") == 400_000
+        assert client.chat.completions.max_tokens_of_model("gpt-5-nano-2025-08-07") == 400_000
 
         # "unsafe" models
 

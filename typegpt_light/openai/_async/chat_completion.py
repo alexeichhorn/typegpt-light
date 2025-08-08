@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TypeVar, cast, overload
+from typing import TypeVar, overload
 
 from openai import BadRequestError, resources
 from openai._types import NOT_GIVEN, NotGiven
